@@ -127,38 +127,57 @@ const UpdateProduct = () => {
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center text-[#A67C52] mb-4">Update Product</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <input {...register("title")} className="w-full p-2 border rounded" placeholder="Product Name" required />
-        <textarea {...register("description")} className="w-full p-2 border rounded" placeholder="Description" required />
-        <select {...register("category")} className="w-full p-2 border rounded" required>
-  <option value="">Select Category</option>
-  <option value="Men">Men</option>
-  <option value="Women">Women</option>
-  <option value="Children">Children</option>
-</select>
 
-        <input {...register("oldPrice")} type="number" className="w-full p-2 border rounded" placeholder="Old Price" required />
-        <input {...register("newPrice")} type="number" className="w-full p-2 border rounded" placeholder="New Price" required />
-        <input {...register("stockQuantity")} type="number" className="w-full p-2 border rounded" placeholder="Stock Quantity" min="0" required />
+        <label className="font-semibold text-gray-700">Product Name</label>
+        <input {...register("title")} className="w-full p-2 border rounded" required />
+
+        <label className="font-semibold text-gray-700">Description</label>
+        <textarea {...register("description")} className="w-full p-2 border rounded" required />
+
+        <label className="font-semibold text-gray-700">Category</label>
+        <select {...register("category")} className="w-full p-2 border rounded" required>
+          <option value="">Select Category</option>
+          <option value="Men">Men</option>
+          <option value="Women">Women</option>
+          <option value="Children">Children</option>
+        </select>
+
+        <label className="font-semibold text-gray-700">Old Price (USD)</label>
+        <input {...register("oldPrice")} type="number" className="w-full p-2 border rounded" required />
+
+        <label className="font-semibold text-gray-700">New Price (USD)</label>
+        <input {...register("newPrice")} type="number" className="w-full p-2 border rounded" required />
+
+        <label className="font-semibold text-gray-700">Stock Quantity</label>
+        <input {...register("stockQuantity")} type="number" className="w-full p-2 border rounded" min="0" required />
+
+        <label className="flex items-center justify-center w-full">
+  <input type="checkbox" {...register("trending")} className="mr-2" />
+  Set as Trending Product
+</label>
+
+
+        <label className="font-semibold text-gray-700">Cover Image</label>
         <input type="file" accept="image/*" onChange={handleFileChange} className="w-full p-2 border rounded" />
         {previewURL && <img src={previewURL} alt="Preview" className="w-64 h-64 object-cover border rounded-md mt-4 mx-auto" />}
+
+        <label className="font-semibold text-gray-700">Colors</label>
         {colors.map((color, index) => (
-          <div key={index} className="space-y-2">
+          <div key={index} className="space-y-2 border p-3 rounded-md">
             <input type="text" value={color.colorName} onChange={(e) => handleColorChange(index, "colorName", e.target.value)} className="w-full p-2 border rounded" placeholder="Color Name" required />
             <input type="file" accept="image/*" onChange={(e) => handleColorChange(index, "imageFile", e.target.files[0])} className="w-full p-2 border rounded" />
-            {color.previewURL && <img src={color.previewURL} alt="Color Preview" className="w-20 h-20 mt-1" />}
-            <button type="button" onClick={() => deleteColor(index)} className="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
+            {color.previewURL && <img src={color.previewURL} alt="Color Preview" className="w-20 h-20 mt-2" />}
+            <button type="button" onClick={() => deleteColor(index)} className="px-3 py-1 bg-red-500 text-white rounded">Delete Color</button>
           </div>
         ))}
         <button type="button" onClick={addColor} className="px-3 py-2 bg-gray-300 rounded">Add Color</button>
-        <div className="flex justify-center">
-        <button
-  type="submit"
-  className="w-full py-2 bg-[#A67C52] text-white rounded-md hover:bg-[#8a5d3b] transition-colors duration-300"
->
-  {updating ? "Updating..." : "Update Product"}
-</button>
 
-</div>
+        <button
+          type="submit"
+          className="w-full py-2 bg-[#A67C52] text-white rounded-md hover:bg-[#8a5d3b] transition-colors duration-300"
+        >
+          {updating ? "Updating..." : "Update Product"}
+        </button>
 
       </form>
     </div>
