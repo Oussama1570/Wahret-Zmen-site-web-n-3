@@ -241,6 +241,24 @@ const sendOrderNotification = async (req, res) => {
       return res.status(404).json({ message: "Product not found in order" });
     }
 
+    // Create the combined content for both French and Arabic
+    const subject = progress < 100 ? `Wahret Zmen - Product Update (${progress}%)` : `Wahret Zmen - Product Ready for Pickup!`;
+
+    const htmlMessage = `
+      <p><strong>Cher ${customerName}</strong>,</p>
+      <p>Votre produit commandé <strong>${matchedProduct.productId.title}</strong> (Couleur : ${matchedProduct.color.colorName}) est maintenant <strong>${progress}% complété</strong>.</p>
+      <img src="${matchedProduct.color.image}" width="60" />
+      <p>Nous vous tiendrons informé lorsque ce sera entièrement prêt !</p>
+      <p>Cordialement,<br/>Boutique Wahret Zmen</p>
+
+      <p><strong>عزيزي ${customerName}،</strong></p>
+      <p>تم إتمام المنتج الذي طلبته <strong>${matchedProduct.productId.title}</strong> (اللون: ${matchedProduct.color.colorName}) بنسبة <strong>${progress}%</strong>.</p>
+      <img src="${matchedProduct.color.image}" width="60" />
+      <p>سوف نعلمك مرة أخرى عندما يكون جاهزًا تمامًا!</p>
+      <p>مع أطيب التحيات,<br/>متجر Wahret Zmen</p>
+    `;
+
+    // Create a mail transporter for sending emails
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -249,28 +267,7 @@ const sendOrderNotification = async (req, res) => {
       },
     });
 
-    let subject, htmlMessage;
-
-    if (progress < 100) {
-      subject = `Wahret Zmen - Product Update (${progress}%)`;
-      htmlMessage = `
-        <p>Dear ${customerName},</p>
-        <p>Your ordered product <strong>${matchedProduct.productId.title}</strong> (Color: ${matchedProduct.color.colorName}) is now <strong>${progress}% completed</strong>.</p>
-        <img src="${matchedProduct.color.image}" width="60" />
-        <p>We'll notify you again once it's fully ready!</p>
-        <p>Best regards,<br/>Wahret Zmen Boutique</p>
-      `;
-    } else {
-      subject = `Wahret Zmen - Product Ready for Pickup!`;
-      htmlMessage = `
-        <p>Dear ${customerName},</p>
-        <p>Your product <strong>${matchedProduct.productId.title}</strong> (Color: ${matchedProduct.color.colorName}) is now <strong>fully completed</strong> and ready for pickup or delivery. 🎉</p>
-        <img src="${matchedProduct.color.image}" width="60" />
-        <p>Thank you for your trust in Wahret Zmen Boutique!</p>
-        <p>Warm regards,<br/>Wahret Zmen Team</p>
-      `;
-    }
-
+    // Send the email with both French and Arabic content
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -279,12 +276,14 @@ const sendOrderNotification = async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "Notification sent successfully" });
+
+    res.status(200).json({ message: "Notification sent successfully in French and Arabic." });
   } catch (error) {
     console.error("Error sending notification:", error);
     res.status(500).json({ message: "Error sending notification", error: error.message });
   }
 };
+
 
 module.exports = {
   createAOrder,
